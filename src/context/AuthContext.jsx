@@ -1,10 +1,9 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-// import { LocalStorage, requestHandler } from "../utils";
-import { loginUser, registerUser } from "../api/authApi";
+import React, { createContext, useContext, useEffect, useRef, useState } from "react";
+import { getUserInfo, loginUser, registerUser } from "../api/authApi";
 import Loader from "../components/shared/Loader";
+import { set } from "react-hook-form";
 
 // Create a context to manage authentication-related data and functions
 const AuthContext = createContext(null);
@@ -36,6 +35,36 @@ const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [accessToken, setAccessToken] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Ref to prevent duplicate calls
+  const initializeUserCalled = useRef(false);
+
+  const initializeUser = async () => {
+    try {
+      const response = await getUserInfo();
+      if (response.status === 200 && response.data.user?.id) {
+        setUser(response.data.user);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Error initializing user:", error);
+      setUser(null);
+    } finally {
+      setIsInitialized(true); // Mark initialization as complete
+    }
+  };
+
+  useEffect(() => {
+    // if (!initializeUserCalled.current) {
+    //   initializeUserCalled.current = true; // Mark as called
+    //   initializeUser();
+    // }
+    if(!user) {
+      initializeUser();
+    } else setIsInitialized(true);
+  }, [user]);
 
   const register = async (data) => {
     console.log(data);
@@ -101,6 +130,10 @@ const AuthProvider = ({ children }) => {
   //     }
   //     // setIsLoading(false);
   //   }, []);
+
+  if (!isInitialized) {
+    return <Loader />;
+  }
 
   return (
     <AuthContext.Provider value={{ user, login, accessToken, register,setUser }}>

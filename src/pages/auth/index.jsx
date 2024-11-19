@@ -10,7 +10,6 @@ import {
 } from "../../components/ui/tabs";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
-import { useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
@@ -22,7 +21,7 @@ const Auth = () => {
     formState: { errors },
   } = useForm();
 
-  const { login, user, register } = useAuth();
+  const { login, register } = useAuth();
   const [authError, setAuthError] = React.useState("");
   const [activeTab, setActiveTab] = React.useState("login");
 
