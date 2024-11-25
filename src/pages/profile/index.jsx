@@ -11,8 +11,10 @@ import { colors, getColor } from "../../lib/utils";
 import { Controller, useForm } from "react-hook-form";
 import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
-import { updateProfile } from "../../api/profileApi";
+import { addProfileImage, updateProfile } from "../../api/profileApi";
 import { toast } from "react-toastify";
+import { IMAGE_SERVER_URL, SERVER_URL } from "../../utils/constants";
+import axios from "axios";
 
 const Profile = () => {
   const {
@@ -29,6 +31,8 @@ const Profile = () => {
 
   const [image, setImage] = React.useState("");
   const [selectedColor, setSelectedColor] = React.useState(0);
+
+  const fileInputRef = React.useRef(null);
 
   const navigate = useNavigate();
 
@@ -64,7 +68,42 @@ const Profile = () => {
   //   } else setValue("email", user.email);
   // }, [user, setValue]);
 
+  // useEffect(() => {
+  //   if (user.profileSetup) {
+  //     reset({
+  //       email: user.email,
+  //       firstName: user.firstName,
+  //       lastName: user.lastName,
+  //     });
+  //     setSelectedColor(user.color);
+  //   }
+
+  //   if(user.image) {
+  //     setImage(`${IMAGE_SERVER_URL}/${user.image}`);
+  //   }
+  // }, [user, reset]);
+
   useEffect(() => {
+    const loadImageAsDataURL = async () => {
+      if (user.image) {
+        console.log("user.image", user.image);
+        try {
+          const response = await axios.get(`http://localhost:8080/${user?.image}`, {
+            responseType: "blob", // Fetch the image as a Blob
+          });
+
+          const url = URL.createObjectURL(response.data);
+          setImage(url);
+        } catch (error) {
+          console.error("Error while fetching the image:", error);
+        }
+      }
+      
+      if(!user.image) {
+        console.warn("No image found");
+      }
+    };
+  
     if (user.profileSetup) {
       reset({
         email: user.email,
@@ -72,6 +111,9 @@ const Profile = () => {
         lastName: user.lastName,
       });
       setSelectedColor(user.color);
+      loadImageAsDataURL();
+    } else {
+      reset({ email: user.email });
     }
   }, [user, reset]);
 
@@ -81,6 +123,39 @@ const Profile = () => {
       navigate("/chat");
     } else toast.error("Please complete your profile setup first");
   }
+
+  const handleFileInputClick = () => {
+    fileInputRef.current.click();
+  };
+
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("profile-image", file);
+      const response = await addProfileImage(formData);
+      if(response.status === 200 && response.data.image) {
+        setUser({
+          ...user,
+          image: response.data.image
+        });
+        toast.success("Profile image updated successfully");
+      }
+      setImage(response.data.image);
+    }
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setImage(event.target.result);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDeleteImage = async () => {
+    setImage("");
+  };
 
   return (
     <div className="bg-[#1b1c24] h-[100vh] flex items-center justify-center flex-col gap-10">
@@ -114,7 +189,10 @@ const Profile = () => {
               )}
             </Avatar>
             {hovered && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black/50 ring-fuchsia-50 rounded-full">
+              <div 
+                className="absolute inset-0 flex items-center justify-center bg-black/50 ring-fuchsia-50 rounded-full"
+                onClick={image ? handleDeleteImage : handleFileInputClick}
+                >
                 {image ? (
                   <FaTrash className="text-white text-3xl cursor-pointer" />
                 ) : (
@@ -122,6 +200,14 @@ const Profile = () => {
                 )}
               </div>
             )}
+            <input
+              type="file"
+              accept=".png, .jpg, .jpeg, .svg, .webp"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+              className="hidden"
+              name="profile-image"
+            />
           </div>
           <div className="flex min-w-32 md:min-w-64 flex-col gap-5 text-white items-center justify-center">
             <form
@@ -187,7 +273,7 @@ const Profile = () => {
               </div>
               <div className="w-full flex gap-5">
                 {colors.map((color, index) => {
-                  console.log("color", color);
+                  // console.log("color", color);
                   return (
                     <div
                       key={index}
