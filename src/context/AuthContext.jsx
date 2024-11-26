@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable no-unused-vars */
 import React, { createContext, useContext, useEffect, useRef, useState } from "react";
-import { getUserInfo, loginUser, registerUser } from "../api/authApi";
+import { getUserInfo, loginUser, logoutUser, registerUser } from "../api/authApi";
 import Loader from "../components/shared/Loader";
 import { set } from "react-hook-form";
 
@@ -104,19 +104,22 @@ const AuthProvider = ({ children }) => {
   };
 
   // Function to handle user logout
-  //   const logout = async () => {
-  //     await requestHandler(
-  //       async () => await logoutUser(),
-  //       setIsLoading,
-  //       () => {
-  //         setUser(null);
-  //         setAccessToken(null);
-  //         LocalStorage.clear(); // Clear local storage on logout
-  //         navigate("/login"); // Redirect to the login page after successful logout
-  //       },
-  //       alert // Display error alerts on request failure
-  //     );
-  //   };
+  const logout = async () => {
+    setIsLoading(true);
+    try {
+      await logoutUser();
+      setUser(null);
+      setAccessToken(null);
+    } catch (error) {
+      console.log("AuthContext logout error:", error);
+      console.log("AuthContext logout error response:", error.response);
+      console.log("AuthContext logout error message:", error.message);
+      console.log("AuthContext logout error request:", error.request);
+      throw error;
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   // Check for saved user and token in local storage during component initialization
 
@@ -136,7 +139,7 @@ const AuthProvider = ({ children }) => {
   }
 
   return (
-    <AuthContext.Provider value={{ user, login, accessToken, register,setUser }}>
+    <AuthContext.Provider value={{ user, login, accessToken, register,setUser, logout }}>
       {/* {isLoading ? <Loader /> : children} */}
       {isLoading && <Loader />}
       {children}
