@@ -13,7 +13,6 @@ import { Input } from "../../components/ui/input";
 import { Button } from "../../components/ui/button";
 import { addProfileImage, updateProfile } from "../../api/profileApi";
 import { toast } from "react-toastify";
-import { IMAGE_SERVER_URL, SERVER_URL } from "../../utils/constants";
 import axios from "axios";
 
 const Profile = () => {
@@ -21,7 +20,6 @@ const Profile = () => {
     control,
     handleSubmit,
     getValues,
-    setValue,
     reset,
     formState: { errors },
   } = useForm();

@@ -13,7 +13,7 @@ const EmptyChatContainer = () => {
       />
       <div className="text-opacity-80 text-white text-3xl lg:text-4xl transition-all duration-200 font-medium flex flex-col items-center gap-5 mt-10 text-center">
         <h3 className="poppins-medium">
-            Hi<span className="text-purple-500">!</span> Welcome to <span className="text-purple-500">Syncronous</span> Chat App
+            Hi<span className="text-purple-500">!</span> Welcome to <span className="text-purple-500">i</span>Chat App
             <span className="text-purple-500">.</span>
         </h3>
       </div>

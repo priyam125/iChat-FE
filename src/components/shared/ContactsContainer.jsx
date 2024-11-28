@@ -1,3 +1,4 @@
+import NewDM from "./NewDM";
 import ProfileInfo from "./ProfileInfo";
 
 const Logo = () => {
@@ -28,7 +29,7 @@ const Logo = () => {
             fill="#a16ee8"
           ></path>{" "}
         </svg>
-        <span className="text-3xl font-semibold ">Syncronus</span>
+        <span className="text-3xl font-semibold "><span className="text-purple-500">i</span>Chat</span>
       </div>
     );
   };
@@ -49,11 +50,13 @@ const Logo = () => {
         <div className="my-5">
             <div className="flex items-center justify-between pr-10">
                 <Title text="Direct Messages" />
+                <NewDM />
             </div>
         </div>
         <div className="my-5">
             <div className="flex items-center justify-between pr-10">
                 <Title text="Channels" />
+                
             </div>
         </div>
         <ProfileInfo />

@@ -9,7 +9,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useNavigate } from "react-router-dom";
-import { IoLogOut, IoPowerSharp } from "react-icons/io5";
+import { IoPowerSharp } from "react-icons/io5";
 import { toast } from "react-toastify";
 
 const ProfileInfo = () => {
