@@ -4,13 +4,16 @@ import "./index.css";
 import App from "./App.jsx";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import { ChatProvider } from "./context/ChatContext.jsx";
+import { SocketProvider } from "./context/SocketContext.jsx";
 
 createRoot(document.getElementById("root")).render(
   // <StrictMode>
   <AuthProvider>
-    <ChatProvider>
-      <App />
-    </ChatProvider>
+    <SocketProvider>
+      <ChatProvider>
+        <App />
+      </ChatProvider>
+    </SocketProvider>
   </AuthProvider>
   // </StrictMode>
 );
