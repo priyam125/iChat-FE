@@ -2,22 +2,45 @@ import React, { useEffect } from "react";
 import { GrAttachment } from "react-icons/gr";
 import { useState } from "react";
 import { RiEmojiStickerLine } from "react-icons/ri";
-import { IoSearch, IoSend } from "react-icons/io5";
+import { IoSend } from "react-icons/io5";
 import EmojiPicker from "emoji-picker-react";
+import { useChat } from "../../context/ChatContext";
+import { useContextSocket } from "../../context/SocketContext";
+import { useAuth } from "../../context/AuthContext";
 const MessageBar = () => {
   const emojiRef = React.createRef();
 
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(""); 
   const [emojiPickerOpen, setEmojiPickerOpen] = useState(false);
+
+  const socket = useContextSocket();
+  const { user } = useAuth();
+
+  const { selectedChatData, selectedChatType } = useChat();
+
+  useEffect(() => {
+    console.log("selectedChatType", selectedChatType);
+    console.log("selectedChatData", selectedChatData);
+  })
 
   const handleAddEmoji = (emoji) => {
     setMessage((msg) => msg + emoji.emoji);
   };
 
-  const handleSendMessage = (e) => {
-    e.preventDefault();
-    console.log(message);
-    setMessage("");
+  const handleSendMessage = async ( ) => {
+    // e.preventDefault(); 
+    // console.log(message);
+    // setMessage("");
+
+    if(selectedChatType === "contact"){
+      socket.emit("sendMessage", {
+        sender: user.id,
+        content: message,
+        recipient: selectedChatData.id,
+        messageType: "text",
+        fileUrl: undefined,
+      });
+    } 
   };
 
   useEffect(() => {

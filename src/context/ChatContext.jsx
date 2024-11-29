@@ -3,18 +3,8 @@
 import React, {
   createContext,
   useContext,
-  useEffect,
-  useRef,
   useState,
 } from "react";
-import {
-  getUserInfo,
-  loginUser,
-  logoutUser,
-  registerUser,
-} from "../api/authApi";
-import Loader from "../components/shared/Loader";
-import { set } from "react-hook-form";
 
 // Create a context to manage authentication-related data and functions
 const ChatContext = createContext(null);
@@ -27,7 +17,6 @@ const ChatProvider = ({ children }) => {
   const [selectedChatType, setSelectedChatType] = useState(null);
   const [selectedChatData, setSelectedChatData] = useState(null);
   const [selectedChatMessages, setSelectedChatMessages] = useState([]);
-  const [isInitialized, setIsInitialized] = useState(false);
 
   const closeChat = () => {
     setSelectedChatType(null);
@@ -35,9 +24,22 @@ const ChatProvider = ({ children }) => {
     setSelectedChatMessages([]);
   };
 
-  //   if (!isInitialized) {
-  //     return <Loader />;
-  //   }
+  const addMessage = (message) => {
+    setSelectedChatMessages((prevMessages) => [
+      ...prevMessages,
+      {
+        ...message,
+        recipient:
+          selectedChatType === "channel"
+            ? message.recipient
+            : message.recipient.id,
+        sender:
+          selectedChatType === "channel"
+            ? message.sender
+            : message.sender.id,
+      },
+    ]);
+  };
 
   return (
     <ChatContext.Provider
@@ -49,10 +51,9 @@ const ChatProvider = ({ children }) => {
         selectedChatMessages,
         setSelectedChatMessages,
         closeChat,
+        addMessage,
       }}
     >
-      {/* {isLoading ? <Loader /> : children} */}
-      {/* {isLoading && <Loader />} */}
       {children}
     </ChatContext.Provider>
   );
