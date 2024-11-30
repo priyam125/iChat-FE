@@ -13,8 +13,8 @@ const Chat = () => {
 
   const { selectedChatType, selectedChatData } = useChat();
 
-  console.log("selectedChatType", selectedChatType);
-  console.log("selectedChatData", selectedChatData);
+  // console.log("selectedChatType", selectedChatType);
+  // console.log("selectedChatData", selectedChatData);
 
   useEffect(() => {
     if (user && !user.profileSetup) {

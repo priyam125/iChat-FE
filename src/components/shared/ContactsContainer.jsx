@@ -1,5 +1,10 @@
+import { useEffect } from "react";
 import NewDM from "./NewDM";
 import ProfileInfo from "./ProfileInfo";
+import { getContactsForDmListApi } from "../../api/contactsApi";
+import { useChat } from "../../context/ChatContext";
+import ContactList from "./ContactList";
+
 
 const Logo = () => {
     return (
@@ -42,6 +47,30 @@ const Logo = () => {
 
 
   const ContactsContainer = () => {
+
+    const {directMessagesContacts, setDirectMessagesContacts} = useChat();
+    console.log("directMessagesContacts", directMessagesContacts);
+    
+    
+
+    useEffect(() => {
+      const getContacts = async () => {
+        const response  = await getContactsForDmListApi();
+
+        console.log("response", response.data);
+
+        if(response.data.contacts) {
+          setDirectMessagesContacts(response.data.contacts);
+        }
+      }
+
+      getContacts();
+    }, [])
+
+    useEffect(() => {
+      console.log("directMessagesContacts", directMessagesContacts);
+    })
+
     return (
       <div className="relative md:w-[35vw] lg:w-[30vw] xl:w-[20vw] bg-[#1b1c24] border-r-2 border-[#2f303b] w-full">
         <div className="pt-3">
@@ -51,6 +80,9 @@ const Logo = () => {
             <div className="flex items-center justify-between pr-10">
                 <Title text="Direct Messages" />
                 <NewDM />
+            </div>
+            <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
+              <ContactList contacts={directMessagesContacts} />
             </div>
         </div>
         <div className="my-5">

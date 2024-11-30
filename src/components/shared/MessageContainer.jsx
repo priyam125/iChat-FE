@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useChat } from "../../context/ChatContext";
 import { useAuth } from "../../context/AuthContext";
 import moment from "moment";
@@ -71,7 +71,7 @@ const MessageContainer = () => {
           message.senderId !== user.id
             ? "bg-[#8417ff]/5 text-[#8417ff]/90 border-[#8417ff]/50"
             : "bg-[#2a2b33]/5 text-white/80 border-white/20"
-        } border inline-block p-4 rounded my-1 max-w-1/2 break-words}`}
+        } border inline-block py-2 px-4 rounded my-1 max-w-1/2 break-words}`}
       >
         {message.content}
       </div>
