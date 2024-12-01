@@ -8,3 +8,7 @@ export const searchContactsApi = (data) => {
 export const getContactsForDmListApi = () => {
     return apiClient.get("/conatcts/get-contacts-for-dm");
 }
+
+export const getAllContactsApi = () => {
+  return apiClient.get("/conatcts/get-all-contacts");
+}

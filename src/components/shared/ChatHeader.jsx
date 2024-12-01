@@ -8,6 +8,9 @@ import { getColor } from "../../lib/utils";
 const ChatHeader = () => {
   const { closeChat, selectedChatData, selectedChatType } = useChat();
 
+  console.log("selectedChatData", selectedChatData);
+  console.log("selectedChatType", selectedChatType);
+
   const [image, setImage] = useState(null);
   const getImage = async () => {
     if (selectedChatData.image) {
@@ -49,17 +52,20 @@ const ChatHeader = () => {
                     selectedChatData.color
                   )}`}
                 >
-                  {selectedChatData.firstName
+                  {selectedChatType === "contact" && selectedChatData.firstName
                     ? selectedChatData.firstName.split("").shift()
-                    : selectedChatData.email.split("").shift()}
+                    : selectedChatType === "contact" &&
+                      !selectedChatData.firstName
+                    ? selectedChatData.email.split("").shift()
+                    : selectedChatData.name.split("").shift()}
                 </div>
               )}
             </Avatar>
           </div>
           <div>
-            {selectedChatType === "contact" && selectedChatData.firstName ? (
-                `${selectedChatData.firstName} ${selectedChatData.lastName}`
-            ): `${selectedChatData.email}` }
+            {selectedChatType === "contact" && selectedChatData.firstName
+              ? `${selectedChatData.firstName} ${selectedChatData.lastName}`
+              : selectedChatType === "contact" && !selectedChatData.firstName ? `${selectedChatData.email}` : selectedChatData.name}
           </div>
         </div>
         <div className="flex items-center justify-center gap-5">

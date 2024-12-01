@@ -4,6 +4,8 @@ import ProfileInfo from "./ProfileInfo";
 import { getContactsForDmListApi } from "../../api/contactsApi";
 import { useChat } from "../../context/ChatContext";
 import ContactList from "./ContactList";
+import CreateChannel from "./CreateChannel";
+import { getChannelsApi } from "../../api/channelsApi";
 
 
 const Logo = () => {
@@ -48,7 +50,7 @@ const Logo = () => {
 
   const ContactsContainer = () => {
 
-    const {directMessagesContacts, setDirectMessagesContacts} = useChat();
+    const {directMessagesContacts, setDirectMessagesContacts, channels, setChannels} = useChat();
     console.log("directMessagesContacts", directMessagesContacts);
     
     
@@ -64,11 +66,23 @@ const Logo = () => {
         }
       }
 
+      const getChannels = async () => {
+        const response  = await getChannelsApi();
+
+        console.log("response", response.data);
+
+        if(response.data.channels) {
+          setChannels(response.data.channels);
+        }
+      }
+
       getContacts();
+      getChannels();
     }, [])
 
     useEffect(() => {
       console.log("directMessagesContacts", directMessagesContacts);
+      console.log("channels", channels);
     })
 
     return (
@@ -82,13 +96,16 @@ const Logo = () => {
                 <NewDM />
             </div>
             <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
-              <ContactList contacts={directMessagesContacts} />
+              <ContactList contacts={directMessagesContacts} isChannel={false} />
             </div>
         </div>
         <div className="my-5">
             <div className="flex items-center justify-between pr-10">
                 <Title text="Channels" />
-                
+                <CreateChannel /> 
+            </div>
+            <div className="max-h-[38vh] overflow-y-auto scrollbar-hidden">
+              <ContactList contacts={channels} isChannel={true} />
             </div>
         </div>
         <ProfileInfo />

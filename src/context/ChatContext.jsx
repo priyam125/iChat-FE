@@ -18,11 +18,16 @@ const ChatProvider = ({ children }) => {
   const [selectedChatData, setSelectedChatData] = useState(null);
   const [selectedChatMessages, setSelectedChatMessages] = useState([]);
   const [directMessagesContacts, setDirectMessagesContacts] = useState([]);
+  const [channels, setChannels] = useState([]);
 
   const closeChat = () => {
     setSelectedChatType(null);
     setSelectedChatData(null);
     setSelectedChatMessages([]);
+  };
+
+  const addChannel = (channel) => {
+    setChannels((prevChannels) => [...prevChannels, channel]);
   };
 
   const addMessage = (message) => {
@@ -55,6 +60,9 @@ const ChatProvider = ({ children }) => {
         setDirectMessagesContacts,
         closeChat,
         addMessage,
+        addChannel,
+        channels,
+        setChannels,
       }}
     >
       {children}

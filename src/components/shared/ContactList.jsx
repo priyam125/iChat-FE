@@ -8,7 +8,7 @@ const ContactList = ({ contacts, isChannel = false }) => {
     
     return (
         <div className="mt-5">
-          {contacts.length === 0 ? (
+          {contacts?.length === 0 ? (
             <p className="text-center text-neutral-500">No contacts found</p>
           ) : (
             contacts.map((contact) => (
